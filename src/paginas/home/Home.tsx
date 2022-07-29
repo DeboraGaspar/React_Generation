@@ -10,6 +10,7 @@ function Home() {
         direction="row"
         justifyContent="center"
         alignItems="center"
+        className= "caixa"
       >
         <Grid alignItems="center" item xs={6}>
           <Box paddingX={20}>
@@ -31,7 +32,7 @@ function Home() {
               align="center"
               className="titulo"
             >
-              Expresse aqui os seus pensamentos e opiniões sobre música!
+              Expresse aqui os seus pensamentos e opiniões!
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center">
@@ -42,7 +43,7 @@ function Home() {
           </Box>
         </Grid>
         <Grid item xs={6}>
-          <img src="4http://i.imgur.com/H88yIo2.png" alt="" width="500px" height="350px" />
+          <img src="http://i.imgur.com/H88yIo2.png" alt="" width="500px" height="350px" />
         </Grid>
         <Grid xs={12} className="postagens"></Grid>
       </Grid>
