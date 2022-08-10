@@ -1,22 +1,22 @@
 import React, { ChangeEvent, useState, useEffect } from 'react'
 import { Box, Button, Grid, TextField, Typography } from '@material-ui/core'
 import { Link, useNavigate } from 'react-router-dom';
-import useLocalStorage from 'react-use-localstorage';
+import { useDispatch } from 'react-redux';
 
-import { login } from '../../services/Service';
 import UserLogin from '../../models/UserLogin';
+import { login } from '../../services/Service';
+import { addId, addToken } from '../../store/tokens/action';
 
 import './Login.css';
 
 function Login() {
 
-    // redireciona o usuário para determinada pagina
     let history = useNavigate()
 
-    // hooks que vão manipular o nosso Local Storage para gravar o Token
-    const [token, setToken] = useLocalStorage('token')
+    const dispatch = useDispatch()
 
-    // useState define como uma determinada variavel será inicializada quando o Comp. for renderizado
+    const [token, setToken] = useState('')
+
     const [userLogin, setUserLogin] = useState<UserLogin>({
         id: 0,
         nome: "",
@@ -26,25 +26,53 @@ function Login() {
         token: ""
     })
 
+    // Crie mais um State para pegar os dados retornados a API
+    const [respUserLogin, setRespUserLogin] = useState<UserLogin>({
+        id: 0,
+        nome: '',
+        usuario: '',
+        senha: '',
+        token: '',
+        foto: ""
+    })
+
     useEffect(() => {
-        if(token !== ""){
+        if (token !== "") {
+            dispatch(addToken(token))
             history('/home')
         }
     }, [token])
 
-    // função que junto com a setUserLogin irá atualizar o valor inicial da userLogin
     function updatedModel(e: ChangeEvent<HTMLInputElement>) {
         setUserLogin({
             ...userLogin,
-            [e.target.name]: e.target.value           
+            [e.target.name]: e.target.value
         })
     }
 
-    async function onSubmit(e: ChangeEvent<HTMLFormElement>){
+    useEffect(() => {
+        if (respUserLogin.token !== "") {
+
+            // Verifica os dados pelo console (Opcional)
+            console.log("Token: " + respUserLogin.token)
+            console.log("ID: " + respUserLogin.id)
+
+            // Guarda as informações dentro do Redux (Store)
+            dispatch(addToken(respUserLogin.token))
+            dispatch(addId(respUserLogin.id.toString()))    // Faz uma conversão de Number para String
+            history('/home')
+        }
+    }, [respUserLogin.token])
+
+    async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
         try {
-            await login(`/usuarios/logar`, userLogin, setToken)
+
+            /* Se atente para a Rota de Logar, e também substitua o método
+            setToken por setRespUserLogin */
+
+            await login(`/usuarios/logar`, userLogin, setRespUserLogin)
             alert("Usuário logado com sucesso")
 
         } catch (error) {
@@ -57,11 +85,11 @@ function Login() {
             <Grid alignItems='center' xs={6}>
                 <Box paddingX={20}>
 
-                    <form onSubmit={ onSubmit }>
+                    <form onSubmit={onSubmit}>
                         <Typography variant='h3' gutterBottom color='textPrimary' component='h3' align='center' className='textos1'>Entrar</Typography>
 
-                        <TextField value={ userLogin.usuario } onChange={ (e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} id='usuario' label='usuário' variant='outlined' name='usuario' margin='normal' fullWidth />
-                        <TextField value={ userLogin.senha } onChange={ (e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} id='senha' label='senha' variant='outlined' name='senha' margin='normal' type='password' fullWidth />
+                        <TextField value={userLogin.usuario} onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} id='usuario' label='usuário' variant='outlined' name='usuario' margin='normal' fullWidth />
+                        <TextField value={userLogin.senha} onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)} id='senha' label='senha' variant='outlined' name='senha' margin='normal' type='password' fullWidth />
 
                         <Box marginTop={2} textAlign='center'>
 
