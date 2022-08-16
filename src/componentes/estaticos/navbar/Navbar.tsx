@@ -8,91 +8,88 @@ import { addToken } from '../../../store/tokens/action';
 
 import './NavBar.css'
 
-function NavBar() {
+function Navbar() {
 
-    let history = useNavigate()
-
-    const dispatch = useDispatch()
-
-    const token = useSelector<UserState, UserState["tokens"]>(
+    const token = useSelector<TokenState, TokenState["tokens"]>(
         (state) => state.tokens
-    )
+    );
+
+    let navigate = useNavigate();
+    const dispatch = useDispatch();
 
     function goLogout() {
-        dispatch(addToken(''))
-        alert("Usuário deslogado")
-        history("/login")
+        dispatch(addToken(''));
+        toast.info('Usuário deslogado', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            theme: "colored",
+            progress: undefined,
+        });
+        navigate('/login')
     }
 
-    var navBarComponent
+    var navbarComponent;
 
     if (token !== "") {
-        navBarComponent =
-            <AppBar position="static">
-                <Toolbar variant="dense">
-                    <Box className='cursor'>
-                        <Typography variant="h5" color="inherit">
-                            BlogPessoal
-                        </Typography>
-                    </Box>
+        navbarComponent = <AppBar position="static">
+                <Toolbar className='nav-main' >
 
-                    <Box display="flex" justifyContent="start">
-                        <Link to="/home" className="text-decorator-none">
-                            <Box mx={1} className='cursor'>
-                                <Typography variant="h6" color="inherit">
-                                    Home
-                                </Typography>
-                            </Box>
-                        </Link>
 
-                        <Link to="/posts" className="text-decorator-none">
-                            <Box mx={1} className='cursor'>
-                                <Typography variant="h6" color="inherit">
-                                    Postagens
-                                </Typography>
-                            </Box>
-                        </Link>
-
-                        <Link to="/temas" className="text-decorator-none">
-                            <Box mx={1} className='cursor'>
-                                <Typography variant="h6" color="inherit">
-                                    Temas
-                                </Typography>
-                            </Box>
-                        </Link>
-
-                        <Link to="/formularioTema" className="text-decorator-none">
-                            <Box mx={1} className='cursor'>
-                                <Typography variant="h6" color="inherit">
-                                    Cadastrar Temas
-                                </Typography>
-                            </Box>
-                        </Link>
-
-                        <Link to="/perfil" className="text-decorator-none">
-                            <Box mx={1} className='cursor'>
-                                <Typography variant="h6" color="inherit">
-                                    Perfil
-                                </Typography>
-                            </Box>
-                        </Link>
-
-                        <Box mx={1} className='cursor' onClick={goLogout}>
+                    <Grid xs={4}>
+                        <Box className="nome-marca">
+                            <img src="https://res.cloudinary.com/generation/image/upload/w_350,q_auto,f_auto/brazil/2022/04/Cover-1.png" className='img-nav' height="56px" />
                             <Typography variant="h6" color="inherit">
-                                Logout
+                                GenQuestions
                             </Typography>
                         </Box>
-                    </Box>
+                    </Grid>
 
+                    <Grid xs={5} className="container">
+                        <Box className="nav-link">
+                            <Link to='/home' className="link">
+                                <Typography variant="h6" color="inherit" className="typography">
+                                    Home
+                                </Typography>
+                            </Link>
+
+                            <Link to='/posts' className="link">
+                                <Typography variant="h6" color="inherit" className="typography">
+                                    Postagens
+                                </Typography>
+                            </Link>
+
+                            <Link to='/temas' className="link">
+                                <Typography variant="h6" color="inherit" className="typography">
+                                    Tema
+                                </Typography>
+                            </Link>
+
+                            <Link to="/formularioTema" className="link">
+                                <Typography variant="h6" color="inherit">
+                                    cadastrar tema
+                                </Typography>
+                            </Link>
+
+                            <Link to='/login' className="link">
+                                <Typography color="inherit" className="typography" onClick={goLogout}>
+                                    Logout
+                                </Typography>
+                            </Link>
+                        </Box>
+                    </Grid>
                 </Toolbar>
-            </AppBar>
+        </AppBar>
     }
 
     return (
         <>
-            { navBarComponent }
+            {navbarComponent}
         </>
-    )
+    );
 }
 
-export default NavBar
+export default Navbar;
